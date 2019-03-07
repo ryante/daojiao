@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="{$config.language}">
+<head>
+    {include file="common/meta" /}
+</head>
+<style>
+.breadcrumb,.navbar-collapse{ background-color: #fff;}
+.content-wrapper, .right-side{ background: rgb(241,244,246);}
+    #tab_2 dt,#tab_2 dd{ font-size: 14px; line-height: 24px; height: 24px;}
+    .choose_text{background-color: #67a1ee !important; color: white;}
+    #description{ height: 700px}
+    #description pre{border:none; font-family: "微软雅黑"; white-space: pre-wrap; font-size: 14px}
+</style>
+<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
+<div class="wrapper">
+
+    <header id="header" class="main-header">
+        {include file='common/header' /}
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        {include file='common/menu' /}
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper tab-content tab-addtabs">
+
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ol class="breadcrumb">
+                                <li><a href="/">首頁</a></li>
+                                <li><a href='{:url("index/archives/index",["cid" => $archiveInfo.channel_id])}'>{$channelName}</a></li>
+                                <li class="active">{$archiveInfo.title}</li>
+                                <li class="active">{$versionName}</li>
+                            </ol>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="navbar navbar-default" style="margin-bottom: 0px;">
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+
+                                    <form class="navbar-form navbar-left" action="/index/search/pagesearch" method="get" id="page-search-form" onsubmit="return bookSearch()" >
+                                        <input type="hidden" value="{$archiveInfo.channel_id}" name="library">
+                                        <input type="hidden" value="{$Request.param.literature}" name="literature">
+                                        <input type="hidden" value="{$Request.param.version}" name="version">
+                                        <input type="hidden" value="{$Request.param.bookid ?? 0 }" name="bookid" id="bookid">
+                                        <input type="hidden" value="{$Request.param.type}" name="type" id="type">
+                                        <select class="form-control" id="select" style="width: 85px;" name="range">
+                                            <option value="1">當前內文</option>
+                                            <option value="2">當前文獻</option>
+                                            <option value="3">當前系列</option>
+                                        </select>
+                                        {assign name="kw" value="$Request.param.kw" /}
+                                        {php}$kw = trim(str_replace('.html', '', $kw));{/php}
+                                        <input type="text" class="form-control" placeholder="搜索內容" id="keyword" name="keyword" value="{$kw}">
+                                        <button type="submit" class="btn btn-default">搜索</button>
+                                    </form>
+                                </div>
+                                <div class="navbar-collapse collapse navbar-responsive-collapse">
+                                    <ul class="nav navbar-nav">
+                                        <li  {if condition="$Request.param.type eq  ''"}class="active"{/if}><a href="{:url("index/book/index",["literature" => $archiveInfo.id, "version" => $Request.param.version])}" >對讀</a></li>
+                                        <li><a href="#tab_2" data-toggle="tab">簡介</a></li>
+                                        <li {if condition="$Request.param.type eq  'text'"}class="active"{/if}><a href="{:url("index/book/index",["literature" => $archiveInfo.id, "version" => $Request.param.version, 'type' => 'text'])}">文字</a></li>
+                                        <li {if condition="$Request.param.type eq  'pic'"}class="active"{/if}><a href="{:url("index/book/index",["literature" => $archiveInfo.id, "version" => $Request.param.version, 'type' => 'pic'])}">閱讀</a></li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">看版本 <b class="caret"></b></a>
+                                            <ul class="dropdown-menu">
+                                                {foreach name="archiveInfo.version" item="vo" key="k" }
+                                                <li><a href='{:url("index/book/index",["literature" => $archiveInfo.id, "version" => $k, "type" => "version"])}'>{$vo}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {if $booksList}
+                            <div class="nav-tabs-custom">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1">
+                                        <!--EBOOK 对读 START-->
+                                        <div class="container" id="container" style="width: 100%; ";>
+                                            <nav>
+                                                <ul>
+                                                    <li><a id='first'     href="#" title='goto first page'   >First page</a></li>
+                                                    <li><a id='back'      href="#" title='go back one page'>Back</a></li>
+                                                    <li><a id='next'      href="#" title='go foward one page'  >Next</a></li>
+                                                    <li><a id='last'      href="#" title='goto last page'    >last page</a></li>
+                                                    <li><a id='zoomin'    href="#" title='zoom in'           >Zoom In</a></li>
+                                                    <li><a id='zoomout'   href="#" title='zoom out'          >Zoom Out</a></li>
+                                                    <li><a id='slideshow' href="#" title='start slideshow'   >Slide Show</a></li>
+                                                    <li><a id='flipsound' href="#" title='flip sound on/off' >Flip sound</a></li>
+                                                    <li><a id='fullscreen' href="#" title='fullscreen on/off' >Fullscreen</a></li>
+                                                    <li><a id='thumbs'    href="#" title='thumbnails on/off' >Thumbs</a></li>
+                                                </ul>
+                                            </nav>
+                                            <div class="main">
+                                                <img class='click_to_open' src="__CDN__/assets/addons/ebook/images/click_to_open.png" alt='click to open' />
+                                                <div class='features' id="features">
+
+                                                    <!--末页 start-->
+                                                    <!--<div class='cover' style='background: url("__CDN__/assets/addons/ebook/images/cover_last.png") no-repeat'>-->
+                                                    <div class='cover' style='background-color:#a7a78c'>
+                                                    </div>
+                                                    <!--末页 end-->
+
+                                                    {php}$keyNum = 1;$countPage = count($booksList);{/php}
+                                                    {if $countPage % 2 != 0 }
+                                                    {if condition="$Request.param.type eq  'text'"}
+                                                    <div class='responsive feature 'class='responsive feature '></div>
+                                                    {/if}
+                                                    {if condition="$Request.param.type eq  'pic'"}
+                                                    <div class='responsive feature 'class='responsive feature '></div>
+                                                    {/if}
+                                                    {/if}
+
+                                                    {foreach $booksList as $key => $vo}
+                                                    {if condition="$Request.param.type eq  'text'"}
+                                                    <!--文本阅读 start-->
+                                                    <div class='responsive feature ' data-bookid="{$vo.id}" id="book_{$vo.id}" >
+                                                        <h1>{$vo.title ? $vo.title : $versionName}</h1>
+                                                        <div class="vertical-content" id="page_{$key+2}" >
+                                                            {$vo.content}
+                                                        </div>
+                                                    </div>
+                                                    <!--文本阅读 end-->
+
+                                                    {elseif  condition="$Request.param.type eq  'pic'"/}
+                                                    <!--图片阅读 start-->
+                                                    <div class='responsive feature' data-bookid="{$vo.id}">
+                                                        <h1>{$vo.title ? $vo.title : $versionName}</h1>
+                                                        <div class="full">
+                                                            <img src='' class="bookImg" data-src="{$vo.image}"/>
+                                                        </div>
+                                                    </div>
+                                                    <!--图片阅读 end-->
+                                                    {else /}
+
+                                                    <!--对读 start-->
+                                                    <div class='responsive feature ' data-bookid="{$vo.id}" id="book_{$vo.id}" >
+                                                        <h1>{$vo.title ? $vo.title : $versionName}</h1>
+                                                        <div class="vertical-content" {php}$keyNum += 1;{/php}  id="page_{$keyNum}">
+                                                            {if $vo.id == $Request.param.bookid}
+                                                                {php}
+                                                                    $vo['content'] =  str_replace($kw, "<span class='choose_text'>$kw</span>", $vo['content']);
+                                                                {/php}
+                                                            {/if}
+                                                            {$vo.content}
+                                                        </div>
+                                                    </div>
+                                                    <div class='responsive feature' data-bookid="{$vo.id}" >
+                                                        <h1>{$vo.title ? $vo.title : $versionName}</h1>
+                                                        <div class="full" {php}$keyNum += 1;{/php} id="page_{$keyNum}">
+                                                            <img src='' class="bookImg" data-src="{$vo.image}"/>
+                                                        </div>
+                                                    </div>
+                                                    <!--对读 end-->
+                                                    {/if}
+                                                    {/foreach}
+
+                                                    <!--首页 start-->
+                                                    <div class='cover' style='background: url("{$firstPage.image}") no-repeat'>
+                                                    <!--<div class="cover-title">{$versionName}</div>-->
+                                                    <!--<div class="cover-author">-->
+                                                    <!--作者&nbsp;&nbsp;&nbsp;{$archiveInfo.author}-->
+                                                    <!--</div>-->
+                                                    <!--<div class="cover-author">-->
+                                                    <!--出版資料&nbsp;&nbsp;&nbsp;{$archiveInfo.publish_locate}-->
+                                                    <!--</div>-->
+                                                    </div>
+                                                    <!--首页 end-->
+
+                                                </div> <!-- features -->
+                                            </div>
+                                        </div>
+                                        <!--EBOOK 对读 END-->
+                                    </div>
+                                    <!-- /.tab-pane -->
+                                    <div class="tab-pane" id="tab_2">
+                                        <div class="box-body" id="description">
+                                            <dl class="dl-horizontal">
+                                                {foreach $fieldsInfo as $k => $vo  }
+                                                <dt>{$k}</dt>
+                                                {if $k == '描述'}
+                                                <dd><pre>{$vo}</pre></dd>
+                                                {else /}
+                                                <dd>{$vo}</dd>
+                                                {/if}
+                                                {/foreach}
+                                            </dl>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            {else /}
+                            <div class="nav-tabs-custom">
+                                <div class="tab-content">
+                                    <h4>暫無內容</h4>
+                                </div>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+
+                    <!--EBOOK style,javascript START-->
+                    <link rel="stylesheet" href="__CDN__/assets/addons/ebook/css/style.css">
+                    <link rel="stylesheet" href="__CDN__/assets/addons/ebook/css/wow_book.css" type="text/css" />
+                    <link rel="stylesheet" type="text/css" href="__CDN__/assets/addons/ebook/css/preview.css">
+                    <script src="__CDN__/assets/addons/ebook/js/modernizr-1.6.min.js"></script>
+                    <style>
+                        .bookImg{ background: url('/uploads/load.gif') no-repeat center center;}
+                        .wowbook-page h1{ font-size: 20px;}
+                        .full{ height: 90%; width: 100%; }
+                        .full img{ width: 100%; height: 100%}
+                        .vertical-content{writing-mode:tb-rl; height: 93%; float: right;  letter-spacing: 2px;}
+                        .cover-title{  writing-mode:tb-rl; height: 100%; padding: 20px; float: right; vert-align: middle; background-color: rgba(143, 141, 139, 0.48); text-align: center; color: #fff; font-size: 40px; font-weight: 700; margin-left: 20px;}
+                        .cover-author{ writing-mode:tb-rl; height: 100%; text-align: center;
+                            float: right; line-height: 50px; font-size: 20px; color: #f5f39c; letter-spacing: 3px;}
+                    </style>
+                    <script src="http://code.jquery.com/jquery-latest.js"></script>
+                    <script type="text/javascript" src="__CDN__/assets/addons/ebook/js/wow_book.min.js"></script>
+                    <script type="text/javascript">
+                        function bookSearch() {
+                             var bookViewType = "{$Request.param.type}";
+                            var kw = $('#keyword').val();
+                            kw = $.trim(kw);
+                            if (!kw) {
+                                alert("請輸入搜索的關鍵詞！");
+                                $('#keyword').focus();
+                                return false;
+                            }
+                            var Regx = /^[A-Za-z0-9<>/,]*$/;
+                            if (Regx.test(kw)) {
+                                alert("輸入有誤！");
+                                return false;
+                            }
+
+                            var type = $('#select').val();
+                            var url = window.location.toString();
+                            var features = url.split("#features/")[1];
+
+                            //当前内文搜索
+                            if (type == 1 && features && bookViewType != 'pic') {
+                                if (bookViewType == 'text') {
+                                    var left_page = '#page_' + (features - 1);
+                                } else {
+                                    var left_page = '#page_' + features;
+                                }
+                                //var left_page_html = $(left_page).text();
+                                var left_page_html = $(left_page).html();
+                                if (left_page_html) {
+                                    //left_page_html = left_page_html.replace(/<[^>]+>/g,"");
+                                    left_page_html = left_page_html.replace(/choose_text/g,"");
+                                    var re = new RegExp(kw,"g");
+                                    left_page_html = left_page_html.replace(re, '<span class="choose_text">' + kw + '</span>');
+                                    $(left_page).html(left_page_html);
+                                }
+                                if (bookViewType == 'text') {
+                                    var right_page = '#page_' + features;
+                                    //var right_page_html =$(right_page).text();
+                                    var right_page_html =$(right_page).html();
+                                    if (right_page_html != undefined) {
+                                        //   right_page_html = right_page_html.replace(/<[^>]+>/g,"");
+                                        right_page_html = right_page_html.replace(/choose_text/g,"");
+                                        var re = new RegExp(kw,"g");
+                                        right_page_html = right_page_html.replace(re, '<span class="choose_text">' + kw + '</span>');
+                                        $(right_page).html(right_page_html);
+                                    }
+                                }
+                                return false;
+                            }
+
+                            if (features) {
+                                $('#features_num').val(features);
+                            }
+                            return true;
+                        }
+
+
+                        $(document).ready(function() {
+                            $('.features').wowBook({
+                                height : 800,
+                                width  : 800,
+                                centeredWhenClosed : true,
+                                hardcovers : true,
+                                turnPageDuration : 1000,
+                                numberedPages : [1,-2],
+                                controls : {
+                                    zoomIn    : '#zoomin',
+                                    zoomOut   : '#zoomout',
+                                    next      : '#back',
+                                    back      : '#next',
+                                    first     : '#last',
+                                    last      : '#first',
+                                    slideShow : '#slideshow',
+                                    flipSound : '#flipsound',
+                                    thumbnails : '#thumbs',
+                                    fullscreen : '#fullscreen'
+                                }
+                                ,scaleToFit: ".container"
+                                ,thumbnailsPosition : 'bottom'
+                                ,onFullscreenError : function(){
+                                    var msg="Fullscreen failed.";
+                                    if (self!=top) msg="The frame is blocking full screen mode. Click on 'remove frame' button above and try to go full screen again."
+                                    alert(msg);
+                                }
+                            }).css({'display':'none', 'margin':'auto'}).fadeIn(1000);
+
+                            $(".cover").click(function(){
+                                $.wowBook(".features").advance();
+                            });
+
+                            var book = $.wowBook(".features");
+                            function rebuildThumbnails(){
+                                book.destroyThumbnails()
+                                book.showThumbnails()
+                                $("#thumbs_holder").css("marginTop", -$("#thumbs_holder").height()/2)
+                            }
+                            $("#thumbs_position button").on("click", function(){
+                                var position = $(this).text().toLowerCase()
+                                if ($(this).data("customized")) {
+                                    position = "top"
+                                    book.opts.thumbnailsParent = "#thumbs_holder";
+                                } else {
+                                    book.opts.thumbnailsParent = "body";
+                                }
+                                book.opts.thumbnailsPosition = position
+                                rebuildThumbnails();
+                            })
+                            $("#thumb_automatic").click(function(){
+                                book.opts.thumbnailsSprite = null
+                                book.opts.thumbnailWidth = null
+                                rebuildThumbnails();
+                            })
+                            $("#thumb_sprite").click(function(){
+                                book.opts.thumbnailsSprite = "__CDN__/assets/addons/ebook/images/thumbs.jpg"
+                                book.opts.thumbnailWidth = 136
+                                rebuildThumbnails();
+                            })
+                            $("#thumbs_size button").click(function(){
+                                var factor = 0.02*( $(this).index() ? -1 : 1 );
+                                book.opts.thumbnailScale = book.opts.thumbnailScale + factor;
+                                rebuildThumbnails();
+                            })
+
+                            //不搜索，默认进来的是末页
+                            var features =  window.location.toString().split("#features/")[1];
+                            var kw = "{$Request.param.kw}";
+                            if (!kw || !features) {
+                                $('#first').click();
+                            }
+
+                            var outerFunc = function() {
+                                var innerFunc = function() {
+                                    $('#next').click();
+                                };
+                                setInterval(innerFunc, 3000);
+                            };
+                            outerFunc();
+
+
+                        });
+
+                        //图片懒加载
+                        $(window).load(function(){
+                            $('.bookImg').each(function(index,item){
+                                var _this = $(item);
+                                _this.attr('src',_this.data('src'));
+                            })
+
+                        })
+
+
+
+                    </script>
+                    <!--EBOOK style,javascript  END-->
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer hide">
+        <div class="pull-right hidden-xs">
+        </div>
+
+    </footer>
+    <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+<!-- end main content -->
+<script>
+
+</script>
+{include file="common/script" /}
+</body>
+</html>

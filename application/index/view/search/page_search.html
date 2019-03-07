@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="{$config.language}">
+<head>
+    {include file="common/meta" /}
+</head>
+<style>
+    .btnPad { padding-left: 10px;}
+    #collapseOne td{ border:0px;}
+    #collapseOne table thead th{ font-size: 18px;}
+    .search-item{ border: none !important;}
+    .search-list dl{ background-color: #fff;}
+    .search-list .bg-light-blue p{ line-height: 30px;padding: 4px 6px; }
+    .search-list .bg-light-blue a{ color: #fff;}
+    .search-list .bg-light-blue a:hover{ text-decoration: underline; font-style: italic}
+    .search-list .dl-horizontal{ padding: 4px 6px;}
+    .bg-light-blue code{ color: #ff9730 !important; padding: 0px !important; background: none !important;}
+    .breadcrumb,.navbar-collapse{ background-color: #fff;}
+    .content-wrapper, .right-side{ background: rgb(241,244,246);}
+</style>
+<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
+<div class="wrapper">
+
+    <header id="header" class="main-header">
+        {include file='common/header' /}
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        {include file='common/menu' /}
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper tab-content tab-addtabs">
+
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+
+                    <div class="row margin">
+                        <div class="col-sm-12">
+                            <ol class="breadcrumb">
+                                <li><a href="/">首頁</a></li>
+                                <li><a href='{:url("index/archives/index",["cid" => $Request.param.library])}'>{$bookInfo.lib_title}</a></li>
+                                {if $Request.param.version}
+                                <li><a href='{:url("index/book/index",["literature" => $Request.param.literature])}'>{$bookInfo.archive_title}</a></li>
+                                <li><a href='{:url("index/book/index",["literature" => $Request.param.literature, "version" => $Request.param.version])}'>{$bookInfo.version_title}</a></li>
+                                {else /}
+                                <li><a href='{:url("index/book/index",["literature" => $Request.param.literature])}'>{$bookInfo.archive_title}</a></li>
+                                {/if}
+                            </ol>
+                        </div>
+                    </div>
+
+
+                    <form action="/index/search/pagesearch" method="get" id="form">
+                        <div class="row margin">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <input type="hidden" value="{$Request.param.library}" name="library">
+                                    <input type="hidden" value="{$Request.param.literature}" name="literature">
+                                    <input type="hidden" value="{$Request.param.version}" name="version">
+                                    <input type="hidden" value="{$Request.param.bookid}" name="bookid" id="bookid">
+                                    <input type="hidden" value="{$Request.param.type}" name="type" id="type">
+                                    <input type="text" class="form-control input-lg " placeholder="關鍵詞搜索" id="keyword" name="keyword" value="{$keyword?$keyword:''}">
+                <span class="input-group-btn btnPad">
+                     <button type="submit" class="btn btn-info btn-block btn-flat btn-lg btnLeft">搜索</button>
+                </span>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row margin collapse {if $Request.controller == 'Search'}in{/if}" id="collapseOne">
+                            <div class="col-sm-12">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">搜索範圍（單選）</h3>
+                                    </div>
+                                    <div class="box-body table-responsive search-item" style="padding-top: 0px">
+                                        <table class="table" data-pid="1">
+                                            <tbody>
+                                                <td style="display: none">
+                                                    <label class="checkbox-inline">
+                                                        <input type="radio" value="1" name="range" {eq name="$Request.param.range" value="1"}checked{/eq}> 当前内文
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label class="checkbox-inline">
+                                                        <input type="radio" value="2" name="range" {eq name="$Request.param.range" value="2"}checked{/eq}> 当前文献
+                                                    </label>
+                                                </td>
+
+                                                <td>
+                                                    <label class="checkbox-inline">
+                                                        <input type="radio" value="3" name="range" {eq name="$Request.param.range" value="3"}checked{/eq}> 当前系列
+                                                    </label>
+                                                </td>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div class="row margin">
+                        <div class="col-sm-12">
+                            <div class="page-header" style="border-bottom:1px solid #d5d5d5">
+                                <h2>搜索結果:  &nbsp;&nbsp;&nbsp;<span class="text-red">{$list->total()}</span>  條結果</h2>
+                            </div>
+                            <div class="search-list">
+                                {foreach $list as $key => $val}
+                                <dl>
+                                    <dt>
+                                    <div class="bg-light-blue color-palette"><p>{$val.lib_title}{if $val.version_title} / {$val.archive_title} / <a href='{:url("index/book/index",["literature" => $val.literature, "version" => $val.version])}'>{$val.version_title}</a> {else /} / <a href='{:url("index/book/index",["literature" => $val.literature])}'>{$val.archive_title}</a>{/if}</p></div>
+                                    </dt>
+                                </dl>
+
+                                {if $val.book_content}
+                                {foreach $val.book_content as $k => $v }
+                                <dl class="dl-horizontal">
+                                    <a href='{:url("index/book/index",["literature" => $v.literature, "version" => $v.version, "bookid" => $v.id, "kw" => $keyword])}/#features/{$v.page_sort}'>{$v.content}</a>
+                                </dl>
+                                {/foreach}
+                                {/if}
+                                {/foreach}
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="text-center">
+                                {$page}
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer hide">
+        <div class="pull-right hidden-xs">
+        </div>
+
+    </footer>
+
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+</div>
+<!-- ./wrapper -->
+<!-- end main content -->
+{include file="common/script" /}
+
+</body>
+</html>

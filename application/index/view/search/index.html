@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="{$config.language}">
+<head>
+    {include file="common/meta" /}
+</head>
+<style>
+    .btnPad { padding-left: 10px;}
+    #collapseOne td{ border:0px;}
+    #collapseOne table thead th{ font-size: 18px;}
+    .search-item{ border: none !important;}
+    .search-list dl{ background-color: #fff;}
+    .search-list .bg-light-blue p{ line-height: 30px;padding: 4px 6px; }
+    .search-list .bg-light-blue a{ color: #fff;}
+    .search-list .bg-light-blue a:hover{ text-decoration: underline; font-style: italic}
+    .search-list .dl-horizontal{ padding: 4px 6px;}
+    .bg-light-blue code{ color: #ff9730 !important; padding: 0px !important; background: none !important;}
+</style>
+<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
+<div class="wrapper">
+
+    <header id="header" class="main-header">
+        {include file='common/header' /}
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        {include file='common/menu' /}
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper tab-content tab-addtabs">
+
+<div class="content">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            {include file='common/search' /}
+
+            <div class="row margin">
+                <div class="col-sm-12">
+                    <div class="page-header" style="border-bottom:1px solid #d5d5d5">
+                        <h2>搜索結果:  &nbsp;&nbsp;&nbsp;<span class="text-red">{$list->total()}</span>  條結果</h2>
+                    </div>
+                    <div class="search-list">
+                        {foreach list as $val}
+                        <dl>
+                            <dt>
+                                <div class="bg-light-blue color-palette"><p>{$val.library}{if $val.version_name} / {$val.title} / <a href='{:url("index/book/index",["literature" => $val.id, "version" => $val.book_version])}'>{$val.version_name}</a> {else /} / <a href='{:url("index/book/index",["literature" => $val.id])}'>{$val.title}</a>{/if}</p></div>
+                            </dt>
+                            <dd>
+                                <dl class="dl-horizontal">
+                                    {if $val.fields_info}
+                                        {foreach $val.fields_info as $k => $v }
+                                            <dt>{$k}</dt>
+                                            <dd>{$v}</dd>
+                                        {/foreach}
+                                    {/if}
+                                </dl>
+
+                            </dd>
+                        </dl>
+
+                        {if $val.book_content}
+                        {foreach $val.book_content as $k => $v }
+                        <dl >
+                            <dd style="padding: 4px;"><a href='{:url("index/book/index",["literature" => $v.literature, "version" => $v.version, "bookid" => $v.id, "kw" => $keyword])}/#features/{$v.page_sort}'>{$v.content}</a></dd>
+                        </dl>
+                        {/foreach}
+                        {/if}
+
+
+                        {/foreach}
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="text-center">
+                        {$page}
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer hide">
+        <div class="pull-right hidden-xs">
+        </div>
+
+    </footer>
+
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+</div>
+<!-- ./wrapper -->
+<!-- end main content -->
+{include file="common/script" /}
+
+</body>
+</html>

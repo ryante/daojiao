@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="{$config.language}">
+<head>
+    {include file="common/meta" /}
+</head>
+<style>
+    .content{ margin-top: 8%;}
+    .btnPad { padding-left: 10px;}
+    #collapseOne td{ border:0px;}
+    #collapseOne table thead th{ font-size: 18px;}
+    .search-item{ border: none !important;}
+</style>
+<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
+<div class="wrapper">
+
+    <header id="header" class="main-header">
+        {include file='common/header' /}
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        {include file='common/menu' /}
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper tab-content tab-addtabs">
+
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+
+                    {include file='common/search' /}
+
+                    <div class="row margin">
+                        <div class="col-sm-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">道教文獻數位計劃</div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        {foreach $libraries as $key => $value}
+                                        <div class="col-md-3">
+                                            <a href='{if condition="$value.type == 'list'"}{:url("index/archives/index",["cid" => $value.id])}{else}{:url("index/channel/index",["cid" => $value.id])}{/if}' class="thumbnail" >
+                                                <img src="{$value.image}" alt="{$value.name}" title="{$value.name}">
+                                            </a>
+                                        </div>
+                                        {/foreach}
+                                        <div class="col-md-3">
+                                            <h1 class="more">...</h1>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer hide">
+        <div class="pull-right hidden-xs">
+        </div>
+
+    </footer>
+
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+</div>
+<!-- ./wrapper -->
+<!-- end main content -->
+{include file="common/script" /}
+
+</body>
+</html>

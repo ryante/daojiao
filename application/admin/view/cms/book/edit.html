@@ -1,0 +1,97 @@
+
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div data-toggle="cxselect" data-selects="first,second,third">
+        <div class="form-group">
+            <label for="c-library" class="control-label col-xs-12 col-sm-2">{:__('Library')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <select class="first form-control" data-rule="required" name="row[library]" data-url="cms/book/choose" data-value="{$row.library}">
+                </select>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="c-literature" class="control-label col-xs-12 col-sm-2">{:__('Literature')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <select class="second form-control" data-rule="required" name="row[literature]" data-url="cms/book/choose" data-query-name="channel_id" data-value="{$row.literature}">
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="c-version" class="control-label col-xs-12 col-sm-2">{:__('Version')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <select class="third form-control" data-rule="" name="row[version]" data-url="cms/book/choose" data-query-name="archives_id" data-value="{$row.version}">
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-image" class="control-label col-xs-12 col-sm-2">{:__('Image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-image" data-rule="required" class="form-control" size="50" name="row[image]" type="text" value="{$row.image}">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="plupload-image" class="btn btn-danger plupload" data-input-id="c-image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-image" class="btn btn-primary fachoose" data-input-id="c-image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-image"></span>
+            </div>
+            <ul class="row list-inline plupload-preview" id="p-image"></ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-title" class="control-label col-xs-12 col-sm-2">頁標題:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-title" class="form-control" name="row[title]" type="text" value="{$row.title}" >
+        </div>
+    </div>
+
+    <style>
+        .input-text,.note-editable{
+            writing-mode: tb-rl;
+            writing-mode: vertical-rl;
+            -webkit-writing-mode: vertical-rl;
+            width: 100% !important;
+            font-size: 16px; letter-spacing:2px;
+            height:460px !important;
+        }
+        #edui1_iframeholder{
+            writing-mode: tb-rl;
+            writing-mode: vertical-rl;
+            -webkit-writing-mode: vertical-rl;
+        }
+
+        .note-editor,.note-editable{ width: 400px;}
+    </style>
+    <div class="form-group">
+        <label for="c-content" class="control-label col-xs-12 col-sm-2">{:__('Content')}:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <script type="text/javascript" charset="utf-8" src="__CDN__/assets/addons/ueditor/ueditor.config.js"></script>
+            <script type="text/javascript" charset="utf-8" src="__CDN__/assets/addons/ueditor/ueditor.all.min.js"> </script>
+            <script type="text/javascript" charset="utf-8" src="__CDN__/assets/addons/ueditor/lang/zh-cn/zh-cn.js"></script>
+            <script>var ue = UE.getEditor('editor');</script>
+            <script type="text/plain" id="editor" name="row[content]" style="width:400px; height:550px;" >{$row.content}</script>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="c-weigh" class="control-label col-xs-12 col-sm-2">{:__('Weigh')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-weigh" data-rule="required" class="form-control" name="row[weigh]" type="number" value="{$row.weigh}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed ">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>
+

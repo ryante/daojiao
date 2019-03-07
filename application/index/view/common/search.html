@@ -1,0 +1,51 @@
+<form action="/index/search/index" method="get" id="form">
+    <div class="row margin">
+        <div class="col-sm-12">
+            <div class="input-group">
+                <input type="text" class="form-control input-lg " placeholder="關鍵詞搜索" id="keyword" name="keyword" value="{$keyword?$keyword:''}">
+                <span class="input-group-btn btnPad">
+                     <button type="submit" class="btn btn-info btn-block btn-flat btn-lg btnLeft">搜索</button>
+                </span>
+                <span class="input-group-btn btnPad">
+                     <button type="button" class="btn btn-info btn-block btn-flat btn-lg btnLeft2 {if $Request.controller != 'Search'}collapsed{/if}"
+                             data-toggle="collapse" data-parent="#accordion" href="#collapseOne">進階搜索 <i
+                             class="glyphicon glyphicon-chevron-down"></i></button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row margin collapse {if $Request.controller == 'Search'}in{/if}" id="collapseOne">
+        <div class="col-sm-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">文獻篩選條件</h3>
+                </div>
+                {foreach $searchFields as $value}
+                <div class="box-body table-responsive search-item" style="padding-top: 0px">
+                    <h4 style="line-height: 20px">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" value="{$value.id}" name="lib_ids[]" data-id="{$value.id}" {eq name="value.checked" value="1"}checked{/eq}> {$value.name}
+                        </label>
+                    </h4>
+                    {if $value.fields}
+                    <table class="table" data-pid="1">
+                        <tbody>
+                        {foreach $value.fields as $k => $v}
+                        {if $k % 6 == 0 }<tr>{/if}
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="{$v.name}" name="fields[{$value.model_id}][]" {eq name="v.checked" value="1"}checked{/eq}> {$v.title}
+                                </label>
+                            </td>
+                            {if ($k + 1) % 6 == 0 }</tr>{/if}
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    {/if}
+                </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+</form>

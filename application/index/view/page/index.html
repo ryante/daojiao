@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="{$config.language}">
+<head>
+    {include file="common/meta" /}
+</head>
+<style>
+.breadcrumb,.navbar-collapse{ background-color: #fff;}
+.content-wrapper, .right-side{ background: rgb(241,244,246);}
+    p{word-wrap: break-word;
+        word-break: normal; }
+    .detail{ padding: 0px 10px;}
+</style>
+<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
+<div class="wrapper">
+
+    <header id="header" class="main-header">
+        {include file='common/header' /}
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        {include file='common/menu' /}
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper tab-content tab-addtabs">
+
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+
+
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <div class="box box-default color-palette-box">
+                                <div class="box-header with-border" style="text-align: center">
+                                    <h3 class="box-title">{$page.title}</h3>
+                                </div>
+                                <div class="box-body">
+                                   <p style="text-align: right; line-height: 30px;">
+                                       <i class="fa fa-clock-o"></i> {:date('Y-m-d H:i',$page['updatetime'])}
+                                   </p>
+                                    <div class="detail">
+                                        {$page.content}
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer hide">
+        <div class="pull-right hidden-xs">
+        </div>
+
+    </footer>
+
+    <!-- Add the sidebar's background. This div must be placed
+         immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+</div>
+<!-- ./wrapper -->
+<!-- end main content -->
+{include file="common/script" /}
+
+</body>
+</html>
