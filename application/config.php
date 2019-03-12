@@ -244,8 +244,8 @@ return [
         'reset'    => true
     ],
     //FastAdmin配置
-    'fastadmin'              => [
-        'version' => '1.0.0.20171026_beta',
-        'api_url' => 'http://api.fastadmin.net',
-    ],
+//    'fastadmin'              => [
+//        'version' => '1.0.0.20171026_beta',
+//        'api_url' => 'http://api.fastadmin.net',
+//    ],
 ];

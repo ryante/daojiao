@@ -21,6 +21,10 @@
      */
     var URL = window.UEDITOR_HOME_URL || getUEBasePath();
 
+    var fontSizeArr = new Array();
+    for(var n = 12; n < 100; n++) {
+        fontSizeArr.push(n);
+    }
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
      */
@@ -193,7 +197,7 @@
 
         //fontsize
         //字号
-        //,'fontsize':[10, 11, 12, 14, 16, 18, 20, 24, 36]
+        ,'fontsize': fontSizeArr
 
         //paragraph
         //段落格式 值留空时支持多语言自动识别，若配置，则以配置值为准

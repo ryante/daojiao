@@ -8,6 +8,7 @@ use think\Cache;
 use think\Config;
 use think\Db;
 use think\Lang;
+use app\common\library;
 
 /**
  * Ajax异步请求接口
@@ -56,7 +57,6 @@ class Ajax extends Backend
         $sha1 = $file->hash();
 
         $upload = Config::get('upload');
-
         preg_match('/(\d+)(\w+)/', $upload['maxsize'], $matches);
         $type = strtolower($matches[2]);
         $typeDict = ['b' => 0, 'k' => 1, 'kb' => 1, 'm' => 2, 'mb' => 2, 'gb' => 3, 'g' => 3];
@@ -80,9 +80,9 @@ class Ajax extends Backend
         ];
         $savekey = $upload['savekey'];
         $savekey = str_replace(array_keys($replaceArr), array_values($replaceArr), $savekey);
-
         $uploadDir = substr($savekey, 0, strripos($savekey, '/') + 1);
         $fileName = substr($savekey, strripos($savekey, '/') + 1);
+
         //
         $splInfo = $file->validate(['size' => $size])->move(ROOT_PATH . '/public' . $uploadDir, $fileName);
         if ($splInfo)
@@ -94,6 +94,35 @@ class Ajax extends Backend
                 $imagewidth = isset($imgInfo[0]) ? $imgInfo[0] : $imagewidth;
                 $imageheight = isset($imgInfo[1]) ? $imgInfo[1] : $imageheight;
             }
+
+            // 生成缩略图 2019年3月12日16:58:40 start
+            if (!empty($upload['thump_type']) && is_array($upload['thump_type'])) {
+                foreach ($upload['thump_type'] as $val) {
+                    $sizeData = explode('*', $val);
+                    $w = (int)$sizeData[0];
+                    $h = (int)$sizeData[1];
+                    if (empty($w) || empty($h)) {
+                        continue;
+                    }
+                    $srcImg = ROOT_PATH . '/public' . $uploadDir. $splInfo->getSaveName();
+                    $dstPath = ROOT_PATH . '/public' . $uploadDir;
+                    if (!file_exists($dstPath)) {
+                    }
+                    $ResizeImage = new library\ResizeImage();
+                    $ResizeImage->isgd(true);
+                    $ResizeImage->filename($srcImg);
+                    $ResizeImage->SetCut(true);
+                    $ResizeImage->Filler("FFFFFF");
+                    $ResizeImage->SetWH($w,$h);
+                    $res = $ResizeImage->Create($srcImg, "{$w}*{$h}_" . $splInfo->getSaveName());
+                    if (!empty($res)) {
+                        $thumb[$val] = $uploadDir. "{$w}*{$h}_" . $splInfo->getSaveName();;
+                    }
+                }
+            }
+            print_r($thumb);die;
+            // 生成缩略图 end
+
             $params = array(
                 'filesize'    => $fileInfo['size'],
                 'imagewidth'  => $imagewidth,

@@ -11449,6 +11449,10 @@ UE.plugins['justify']=function(){
  */
 
 UE.plugins['font'] = function () {
+    var fontSizeArr = new Array();
+    for(var n = 12; n < 100; n++) {
+        fontSizeArr.push(n);
+    };
     var me = this,
         fonts = {
             'forecolor': 'color',
@@ -11481,7 +11485,7 @@ UE.plugins['font'] = function () {
             { name: 'impact', val: 'impact,chicago'},
             { name: 'timesNewRoman', val: 'times new roman'}
         ],
-        'fontsize': [10, 11, 12, 14, 16, 18, 20, 24, 36]
+        'fontsize': fontSizeArr
     });
 
     function mergeWithParent(node){
